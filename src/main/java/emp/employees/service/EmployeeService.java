@@ -1,9 +1,10 @@
 package emp.employees.service;
 
+import emp.employees.dto.APIResponseDto;
 import emp.employees.dto.EmployeeDto;
 
 public interface EmployeeService {
     EmployeeDto saveEmployee(EmployeeDto employeeDto);
 
-    EmployeeDto getEmployeeById(Long employeeId);
+    APIResponseDto getEmployeeById(Long employeeId);
 }

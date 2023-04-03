@@ -1,21 +1,29 @@
 package emp.employees.service.impl;
 
+import emp.employees.dto.APIResponseDto;
+import emp.employees.dto.DepartmentDto;
 import emp.employees.entity.Employee;
+import emp.employees.service.APIClient;
 import lombok.AllArgsConstructor;
 import emp.employees.dto.EmployeeDto;
 import emp.employees.exception.ResourceNotFoundException;
 import emp.employees.mapper.AutoMapperEmployee;
 import emp.employees.repository.EmployeeRepository;
 import emp.employees.service.EmployeeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
+
+    //private WebClient webClient;
+
+    private APIClient apiClient;
 
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
@@ -28,11 +36,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDto getEmployeeById(Long employeeId) {
+    public APIResponseDto getEmployeeById(Long employeeId) {
 
-        Optional<Employee> employee = employeeRepository.findById(employeeId);
-        if(!employee.isPresent())
+        Employee employee = employeeRepository.findById(employeeId).get();
+        if(employee == null)
             throw new ResourceNotFoundException("Employee", "employeeId", employeeId);
-        return AutoMapperEmployee.MAPPER.mapToEmployeeDto(employee.get());
+
+
+//        DepartmentDto departmentDto = webClient.get()
+//                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
+//                .retrieve()
+//                .bodyToMono(DepartmentDto.class)
+//                .block();
+
+        DepartmentDto departmentDto = apiClient.getDepartment(employee.getDepartmentCode());
+
+        APIResponseDto apiResponseDto = new APIResponseDto();
+        apiResponseDto.setDepartment(departmentDto);
+        apiResponseDto.setEmployee(AutoMapperEmployee.MAPPER.mapToEmployeeDto(employee));
+
+        return apiResponseDto;
     }
 }

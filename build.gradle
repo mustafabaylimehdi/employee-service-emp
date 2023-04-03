@@ -18,9 +18,14 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('springCloudVersion', "2022.0.1")
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -31,8 +36,11 @@ dependencies {
 	implementation group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.0.0.Beta3'
 	// for Main sources set
 	implementation 'org.mapstruct:mapstruct-jdk8:1.2.0.Final'
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-openfeign
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.0.2'
 	annotationProcessor 'org.mapstruct:mapstruct-processor:1.2.0.Final'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
